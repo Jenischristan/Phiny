@@ -1,0 +1,260 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-line: var(--line);
+  --color-mut: var(--mut);
+  --color-sub: var(--sub);
+  --color-coral: #F2765E;
+  --color-navy: #315B8C;
+  --color-cream: #F5EBDD;
+  --color-brown: #413333;
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  :root {
+    --e: cubic-bezier(.2, .8, .2, 1);
+    --d1: .12s;
+    --d2: .18s;
+    --bg: #fff;
+    --fg: #0a0a0a;
+    --line: #e2e2e2;
+    --mut: #6b6b6b;
+    --sub: #f5f5f5;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme=light]) {
+      --bg: #0a0a0a;
+      --fg: #fafafa;
+      --line: #2a2a2a;
+      --mut: #a3a3a3;
+      --sub: #151515;
+    }
+  }
+
+  :root[data-theme=dark] {
+    --bg: #0a0a0a;
+    --fg: #fafafa;
+    --line: #2a2a2a;
+    --mut: #a3a3a3;
+    --sub: #151515;
+  }
+
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    border-color: var(--line);
+  }
+
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid #315B8C;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .lbl {
+    font: 500 11px/1.2 'IBM Plex Mono', monospace;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--mut);
+  }
+
+  .inp {
+    height: 44px;
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--fg);
+    padding: 0 12px;
+    border-radius: 2px;
+    transition: border-color var(--d1);
+  }
+
+  .inp:hover {
+    border-color: var(--mut);
+  }
+
+  .inp[aria-invalid=true] {
+    border-color: #F2765E;
+  }
+
+  .btn {
+    height: 44px;
+    padding: 0 20px;
+    border: 1px solid var(--fg);
+    border-radius: 2px;
+    font: 500 12px 'IBM Plex Mono', monospace;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background var(--d1), color var(--d1), opacity var(--d1);
+    white-space: nowrap;
+  }
+
+  .btn-p {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .btn-p:hover {
+    opacity: .85;
+  }
+
+  .btn-s {
+    background: transparent;
+    color: var(--fg);
+  }
+
+  .btn-s:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .btn:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+
+  .sm {
+    height: 36px;
+    padding: 0 14px;
+  }
+
+  .grain {
+    background-color: #0a0a0a;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .32 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E"),
+      radial-gradient(90% 65% at 15% 15%, rgba(49, 91, 140, 0.28), transparent 65%),
+      radial-gradient(85% 60% at 90% 90%, rgba(245, 235, 221, 0.14), transparent 60%),
+      linear-gradient(160deg, #141414 0%, #0a0a0a 55%, #11161d 100%);
+    color: #fff;
+  }
+}
+
+@keyframes fi {
+  from { opacity: 0; }
+}
+@keyframes fo {
+  to { opacity: 0; }
+}
+@keyframes pi {
+  from { opacity: 0; transform: translateY(6px) scale(.98); }
+}
+@keyframes po {
+  to { opacity: 0; transform: translateY(6px) scale(.98); }
+}
+@keyframes mi {
+  from { opacity: 0; transform: translateY(-3px) scale(.98); }
+}
+@keyframes mo {
+  to { opacity: 0; transform: scale(.98); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+}
+@keyframes sp {
+  to { transform: rotate(360deg); }
+}
+@keyframes beat {
+  40% { transform: scale(1.2); }
+}
+@keyframes si {
+  from { transform: translateX(100%); }
+}
+@keyframes so {
+  to { transform: translateX(100%); }
+}
+@keyframes sl {
+  from { transform: translateX(-100%); }
+}
+@keyframes slo {
+  to { transform: translateX(-100%); }
+}
+@keyframes up {
+  from { transform: translateY(100%); }
+}
+@keyframes dn {
+  to { transform: translateY(100%); }
+}
+
+.fadein { animation: fi var(--d2) var(--e); }
+.fadeout { animation: fo var(--d1) var(--e) forwards; }
+.popin { animation: pi var(--d2) var(--e); }
+.popout { animation: po var(--d1) var(--e) forwards; }
+.mpin { animation: mi var(--d1) var(--e); }
+.mpout { animation: mo var(--d1) var(--e) forwards; }
+.sin { animation: si var(--d2) var(--e); }
+.sout { animation: so var(--d1) var(--e) forwards; }
+.lin { animation: sl var(--d2) var(--e); }
+.lout { animation: slo var(--d1) var(--e) forwards; }
+.sup { animation: up var(--d2) var(--e); }
+.sdn { animation: dn var(--d1) var(--e) forwards; }
+.rise { animation: rise var(--d2) var(--e); }
+.beat { animation: beat .22s var(--e); }
+.spin { animation: sp .8s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.ns {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.ns::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.tip {
+  position: relative;
+}
+.tip[data-tip]:hover::after,
+.tip[data-tip]:focus-visible::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--fg);
+  color: var(--bg);
+  font: 500 11px/1 'IBM Plex Mono', monospace;
+  padding: 7px 9px;
+  white-space: nowrap;
+  z-index: 60;
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .sb-open .tip::after {
+    display: none !important;
+  }
+}
