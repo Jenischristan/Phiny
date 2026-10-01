@@ -141,7 +141,11 @@ export function SearchBar({ q, setQ }: SearchBarProps) {
 
   const commit = () => {
     setO(false);
-    setQ(v.trim());
+    const trimmed = v.trim();
+    setQ(trimmed);
+    if (c.route !== 'home' && c.route !== 'explore') {
+      c.go('home');
+    }
   };
 
   const pick = (r: SuggestionRow) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { IB } from '@/lib/utils';
 
@@ -16,6 +16,7 @@ interface DialogProps {
 }
 
 export function Dialog({ open, onClose, label, desc, side, children }: DialogProps) {
+  const descId = useId();
   const [m, setM] = useState(open);
   const ref = useRef<HTMLDivElement | null>(null);
   const onCloseRef = useRef(onClose);
@@ -96,7 +97,7 @@ export function Dialog({ open, onClose, label, desc, side, children }: DialogPro
         role="dialog"
         aria-modal="true"
         aria-label={label}
-        aria-describedby="dlg-d"
+        aria-describedby={descId}
         className={
           'relative bg-bg border-line overflow-auto ns overscroll-contain ' +
           (S
@@ -107,7 +108,7 @@ export function Dialog({ open, onClose, label, desc, side, children }: DialogPro
             : 'w-full max-w-md max-h-[90dvh] border p-5 sm:p-7 ' + (open ? 'popin' : 'popout'))
         }
       >
-        <p id="dlg-d" className="sr-only">
+        <p id={descId} className="sr-only">
           {desc || label}
         </p>
         <button

@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Grid } from '@/components/feed/Grid';
 import { Empty } from '@/components/ui/Empty';
 import { FollowButton } from '@/components/ui/FollowButton';
@@ -19,6 +21,7 @@ interface PostViewProps {
 }
 
 export function PostView({ id }: PostViewProps) {
+  const router = useRouter();
   const c = useC();
   const p = c.posts.find((x) => String(x.id) === String(id));
   const [cm, setCm] = useState<CommentTuple[]>(COMMENTS);
@@ -42,7 +45,7 @@ export function PostView({ id }: PostViewProps) {
   const rel = c.posts
     .filter(
       (x) =>
-        x.id !== realId &&
+        String(x.id) !== String(realId) &&
         x.vis === 'public' &&
         !c.hidden[x.id] &&
         (x.tag === p.tag ||
@@ -63,9 +66,17 @@ export function PostView({ id }: PostViewProps) {
     }, 'Log in to comment.');
   };
 
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto">
-      <button type="button" onClick={c.back} className="btn btn-s sm mb-4">
+      <button type="button" onClick={handleBack} className="btn btn-s sm mb-4">
         <Icon n="arrow" c="w-4 h-4 rotate-180" />
         Back
       </button>
@@ -88,11 +99,10 @@ export function PostView({ id }: PostViewProps) {
           className="border border-line flex flex-col lg:max-h-[85vh]"
         >
           <div className="flex items-center gap-3 p-4 border-b border-line">
-            <button
-              type="button"
+            <Link
+              href={'/profile/' + p.by.id}
               aria-label={'View ' + p.by.name + ' profile'}
-              onClick={() => c.go('profile', p.by.id)}
-              className="flex items-center gap-3 min-w-0 flex-1 text-left"
+              className="flex items-center gap-3 min-w-0 flex-1 text-left hover:opacity-85 transition-opacity"
             >
               <ProfileAvatar p={p.by} src={p.by.photo} />
               <span className="min-w-0">
@@ -101,7 +111,7 @@ export function PostView({ id }: PostViewProps) {
                   @{p.by.handle}
                 </span>
               </span>
-            </button>
+            </Link>
             {!mine && (
               <FollowButton
                 on={!!c.fol[p.by.id]}
@@ -222,10 +232,9 @@ export function PostView({ id }: PostViewProps) {
                   const to = () => i >= 0 && c.go('profile', i);
                   return (
                     <li key={k} className="group flex gap-3">
-                      <button
-                        type="button"
+                      <Link
+                        href={'/profile/' + (i < 0 ? 'me' : i)}
                         aria-label={'View ' + P.name + ' profile'}
-                        onClick={to}
                         className="shrink-0 self-start"
                       >
                         <ProfileAvatar
@@ -233,16 +242,15 @@ export function PostView({ id }: PostViewProps) {
                           size={32}
                           src={i < 0 ? P.photo : undefined}
                         />
-                      </button>
+                      </Link>
                       <div className="text-sm min-w-0 flex-1">
                         <p>
-                          <button
-                            type="button"
-                            onClick={to}
+                          <Link
+                            href={'/profile/' + (i < 0 ? 'me' : i)}
                             className="font-bold hover:underline"
                           >
                             {P.name}
-                          </button>{' '}
+                          </Link>{' '}
                           <span className="lbl ml-1">{w}</span>
                         </p>
                         <p className="mt-0.5 break-words">{x}</p>

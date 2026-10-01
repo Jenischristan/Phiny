@@ -7,14 +7,13 @@ import { tagsOf } from '@/lib/utils';
 
 export function HomeView() {
   const c = useC();
-  const { q, setQ, tag } = c;
+  const { q, setQ } = c;
 
   const vis = c.posts.filter(
     (p) =>
       p.by.state !== 'deactivated' &&
       !c.hidden[p.id] &&
       p.vis !== 'private' &&
-      (tag === 'All' || p.tag === tag) &&
       (p.title + p.by.name + tagsOf(p).join(' '))
         .toLowerCase()
         .includes(q.replace(/^#/, '').toLowerCase())

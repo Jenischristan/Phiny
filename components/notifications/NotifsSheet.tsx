@@ -73,23 +73,27 @@ export function NotifsSheet() {
                 </span>
                 <span className="lbl block mt-0.5">{a.w}</span>
               </p>
-              {a.pin != null && (
-                <button
-                  type="button"
-                  aria-label={'Open post: ' + PINS[a.pin].title}
-                  onClick={() => {
-                    rd(a.id);
-                    c.go('post', a.pin);
-                  }}
-                  className="shrink-0"
-                >
-                  <img
-                    src={pinSrc(PINS[a.pin])}
-                    alt=""
-                    className="w-10 h-10 object-cover border border-line"
-                  />
-                </button>
-              )}
+              {a.pin != null && (() => {
+                const targetPin = c.posts.find((p) => String(p.id) === String(a.pin)) || PINS[a.pin];
+                if (!targetPin) return null;
+                return (
+                  <button
+                    type="button"
+                    aria-label={'Open post: ' + targetPin.title}
+                    onClick={() => {
+                      rd(a.id);
+                      c.go('post', a.pin!);
+                    }}
+                    className="shrink-0"
+                  >
+                    <img
+                      src={pinSrc(targetPin)}
+                      alt=""
+                      className="w-10 h-10 object-cover border border-line"
+                    />
+                  </button>
+                );
+              })()}
               {a.u ? (
                 <span
                   className="w-2 h-2 bg-coral shrink-0"

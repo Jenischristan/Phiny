@@ -1,11 +1,12 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { Menu } from '@/components/ui/Menu';
 import { ProfileAvatar } from '@/components/ui/ProfileAvatar';
-import { useC } from '@/context/PhinyContext';
+import { useC, routeToPath } from '@/context/PhinyContext';
 import { NAV } from '@/data/mockData';
 import { IB, IBS } from '@/lib/utils';
 import { IconName, RouteName } from '@/types';
@@ -19,32 +20,57 @@ export function Sidebar() {
   const lab = k0 ? 'hidden' : 'hidden lg:inline whitespace-nowrap truncate min-w-0';
   const tg = k0 ? 'Expand sidebar' : 'Collapse sidebar';
 
-  const item = ([k, l, i]: [RouteName, string, IconName]) => (
-    <button
-      key={k}
-      type="button"
-      aria-label={l}
-      data-tip={l}
-      aria-current={c.route === k ? 'page' : undefined}
-      onClick={() => c.nav(k)}
-      className={
-        row +
-        ' ' +
-        (c.route === k || c.sheet === k
-          ? 'border-fg bg-fg text-bg'
-          : 'border-transparent hover:border-line')
-      }
-    >
-      <Icon n={i} c="w-5 h-5 shrink-0" />
-      <span className={lab}>{l}</span>
-      {k === 'notifications' && c.unread > 0 && (
-        <span
-          className="absolute top-2 right-2 w-2 h-2 bg-coral"
-          aria-label="Unread notifications"
-        ></span>
-      )}
-    </button>
-  );
+  const item = ([k, l, i]: [RouteName, string, IconName]) => {
+    const isSheet = k === 'notifications' || k === 'messages';
+    const active = c.route === k || c.sheet === k;
+    const content = (
+      <>
+        <Icon n={i} c="w-5 h-5 shrink-0" />
+        <span className={lab}>{l}</span>
+        {k === 'notifications' && c.unread > 0 && (
+          <span
+            className="absolute top-2 right-2 w-2 h-2 bg-coral"
+            aria-label="Unread notifications"
+          ></span>
+        )}
+      </>
+    );
+    const cls =
+      row +
+      ' ' +
+      (active
+        ? 'border-fg bg-fg text-bg'
+        : 'border-transparent hover:border-line');
+
+    if (isSheet) {
+      return (
+        <button
+          key={k}
+          type="button"
+          aria-label={l}
+          data-tip={l}
+          aria-current={active ? 'page' : undefined}
+          onClick={() => c.nav(k)}
+          className={cls}
+        >
+          {content}
+        </button>
+      );
+    }
+
+    return (
+      <Link
+        key={k}
+        href={routeToPath(k)}
+        aria-label={l}
+        data-tip={l}
+        aria-current={active ? 'page' : undefined}
+        className={cls}
+      >
+        {content}
+      </Link>
+    );
+  };
 
   return (
     <aside
@@ -59,10 +85,9 @@ export function Sidebar() {
           (k0 ? 'flex-col items-center gap-1' : 'items-center justify-between')
         }
       >
-        <button
-          type="button"
+        <Link
+          href="/"
           aria-label="Phiny home"
-          onClick={() => c.go('home')}
           className={
             'h-12 flex items-center ' +
             (k0 ? 'w-full justify-center' : 'flex-1 justify-center lg:justify-start')
@@ -80,7 +105,7 @@ export function Sidebar() {
               </span>
             </>
           )}
-        </button>
+        </Link>
         <button
           type="button"
           aria-expanded={!k0}

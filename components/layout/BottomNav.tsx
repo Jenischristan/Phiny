@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Icon } from '@/components/ui/Icon';
-import { useC } from '@/context/PhinyContext';
+import { useC, routeToPath } from '@/context/PhinyContext';
 import { NAV } from '@/data/mockData';
 import { RouteName } from '@/types';
 
@@ -19,22 +20,22 @@ export function BottomNav() {
       {BOTTOM_KEYS.map((k) => {
         const found = NAV.find((n) => n[0] === k)!;
         const [, l, i] = found;
+        const active = c.route === k;
         return (
-          <button
+          <Link
             key={k}
-            type="button"
+            href={routeToPath(k)}
             aria-label={l}
-            aria-current={c.route === k ? 'page' : undefined}
-            onClick={() => c.nav(k)}
+            aria-current={active ? 'page' : undefined}
             className={
               'h-14 grid place-items-center border-t-2 ' +
-              (c.route === k
+              (active
                 ? 'text-fg border-fg'
                 : 'text-mut border-transparent')
             }
           >
             <Icon n={i} c="w-6 h-6" />
-          </button>
+          </Link>
         );
       })}
     </nav>

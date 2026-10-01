@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Icon } from '@/components/ui/Icon';
 import { useC } from '@/context/PhinyContext';
 import { pinSrc } from '@/lib/art';
@@ -8,7 +9,7 @@ import { Collection } from '@/types';
 
 interface CollGridProps {
   colls: Collection[];
-  onOpen: (id: string) => void;
+  onOpen?: (id: string) => void;
 }
 
 export function CollGrid({ colls, onOpen }: CollGridProps) {
@@ -16,13 +17,13 @@ export function CollGrid({ colls, onOpen }: CollGridProps) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {colls.map((k) => {
-        const p = c.posts.find((x) => x.id === k.pins[0]);
+        const p = c.posts.find((x) => String(x.id) === String(k.pins[0]));
         return (
-          <button
+          <Link
             key={k.id}
-            type="button"
-            onClick={() => onOpen(k.id)}
-            className="text-left border border-line hover:border-fg transition-colors"
+            href={'/collection/' + k.id}
+            onClick={() => onOpen && onOpen(k.id)}
+            className="text-left border border-line hover:border-fg transition-colors block"
           >
             <div className="aspect-[4/3] bg-sub overflow-hidden">
               {p ? (
@@ -42,7 +43,7 @@ export function CollGrid({ colls, onOpen }: CollGridProps) {
               </span>
               {k.priv && <Icon n="lock" />}
             </div>
-          </button>
+          </Link>
         );
       })}
     </div>

@@ -103,7 +103,7 @@ export function CreateView() {
         id: 'n' + Date.now(),
         title: f.title.trim(),
         by: c.me!,
-        tag: 'Art',
+        tag: f.tags[0] ? f.tags[0].charAt(0).toUpperCase() + f.tags[0].slice(1) : 'Art',
         tags: f.tags.length ? f.tags : undefined,
         seed: 1,
         ratio: f.ratio,
@@ -127,7 +127,13 @@ export function CreateView() {
       <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">Create</h1>
       <div className="grid lg:grid-cols-2 gap-8">
         <div>
-          <ImageUploader value={f.img} onChange={setImg} />
+          <ImageUploader
+            value={f.img}
+            onChange={setImg}
+            label="Add post image"
+            hint="Drag and drop, or browse (JPG, PNG, WebP up to 5MB)"
+            altText="Preview of your post"
+          />
           {sh('img') && (
             <p role="alert" className="text-xs mt-2">
               <span className="inline-block w-2 h-2 bg-coral mr-2"></span>

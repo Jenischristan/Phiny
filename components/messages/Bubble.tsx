@@ -49,7 +49,7 @@ export function Bubble({ m, items }: BubbleProps) {
             sm={true}
             api={api}
             label="Message options"
-            tcls="ml-1 opacity-0 max-md:pointer-events-none md:group-hover:opacity-100 focus-visible:opacity-100 aria-expanded:opacity-100"
+            tcls="ml-1 opacity-70 hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 aria-expanded:opacity-100"
             items={items}
           />
         </div>

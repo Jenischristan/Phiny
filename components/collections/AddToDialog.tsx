@@ -20,7 +20,7 @@ export function AddToDialog() {
       <h2 className="text-2xl font-bold mb-6">Add to collection</h2>
       <ul className="border border-line divide-y divide-line">
         {c.colls.map((k) => {
-          const on = id != null && k.pins.includes(id);
+          const on = id != null && k.pins.some((pinId) => String(pinId) === String(id));
           return (
             <li key={k.id}>
               <button

@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Empty } from '@/components/ui/Empty';
 import { FollowButton } from '@/components/ui/FollowButton';
 import { Icon } from '@/components/ui/Icon';
@@ -14,11 +16,12 @@ interface PeopleViewProps {
 }
 
 export function PeopleView({ type, id }: PeopleViewProps) {
+  const router = useRouter();
   const c = useC();
   const [q, setQ] = useState('');
   const isMe = id === 'me';
   const numId = typeof id === 'number' ? id : Number(id);
-  const p = isMe ? c.me : PEOPLE[numId];
+  const p = isMe ? c.me : (PEOPLE.find((person) => person.id === numId) || PEOPLE[numId]);
 
   if (!p) {
     return (
@@ -40,9 +43,17 @@ export function PeopleView({ type, id }: PeopleViewProps) {
     (x.name + x.handle).toLowerCase().includes(q.toLowerCase())
   );
 
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push(isMe ? '/profile/me' : `/profile/${id}`);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto">
-      <button type="button" onClick={c.back} className="btn btn-s sm mb-6">
+      <button type="button" onClick={handleBack} className="btn btn-s sm mb-6">
         <Icon n="arrow" c="w-4 h-4 rotate-180" />
         Back
       </button>
@@ -83,11 +94,10 @@ export function PeopleView({ type, id }: PeopleViewProps) {
               key={x.id}
               className="flex items-center gap-3 p-4 border border-line hover:border-mut transition-colors"
             >
-              <button
-                type="button"
+              <Link
+                href={'/profile/' + x.id}
                 aria-label={'View ' + x.name + ' profile'}
-                onClick={() => c.go('profile', x.id)}
-                className="flex items-center gap-3 min-w-0 flex-1 text-left"
+                className="flex items-center gap-3 min-w-0 flex-1 text-left hover:opacity-85 transition-opacity"
               >
                 <ProfileAvatar p={x} size={48} />
                 <span className="min-w-0">
@@ -99,7 +109,7 @@ export function PeopleView({ type, id }: PeopleViewProps) {
                     {x.bio}
                   </span>
                 </span>
-              </button>
+              </Link>
               <FollowButton
                 on={!!c.fol[x.id]}
                 name={x.name}

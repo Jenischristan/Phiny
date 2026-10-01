@@ -22,7 +22,7 @@ export function MsgsSheet() {
   const end = useRef<HTMLLIElement | null>(null);
 
   const cn = cv.find((x) => x.id === cur);
-  const P = cn && PEOPLE[cn.id];
+  const P = cn && (PEOPLE.find((p) => p.id === cn.u) || PEOPLE[cn.u]);
   const n = cn ? cn.m.length : 0;
 
   const upd = (id: number | null, f: (x: Conversation) => Conversation) =>
@@ -78,22 +78,29 @@ export function MsgsSheet() {
                     }}
                     className="w-full flex items-center gap-3 px-3.5 py-3 text-left hover:bg-sub"
                   >
-                    <ProfileAvatar p={PEOPLE[x.id]} size={36} />
-                    <span className="flex-1 min-w-0">
-                      <span
-                        className={'block text-sm truncate ' + (x.u ? 'font-bold' : 'font-medium')}
-                      >
-                        {PEOPLE[x.id].name}
-                        {x.mute ? ' · Muted' : ''}
-                      </span>
-                      <span
-                        className={
-                          'block text-xs truncate mt-0.5 ' + (x.u ? 'text-fg' : 'text-mut')
-                        }
-                      >
-                        {last(x).t}
-                      </span>
-                    </span>
+                    {(() => {
+                      const person = PEOPLE.find((p) => p.id === x.u) || PEOPLE[x.u] || PEOPLE[0];
+                      return (
+                        <>
+                          <ProfileAvatar p={person} size={36} />
+                          <span className="flex-1 min-w-0">
+                            <span
+                              className={'block text-sm truncate ' + (x.u ? 'font-bold' : 'font-medium')}
+                            >
+                              {person.name}
+                              {x.mute ? ' · Muted' : ''}
+                            </span>
+                            <span
+                              className={
+                                'block text-xs truncate mt-0.5 ' + (x.u ? 'text-fg' : 'text-mut')
+                              }
+                            >
+                              {last(x).t}
+                            </span>
+                          </span>
+                        </>
+                      );
+                    })()}
                     <span className="lbl shrink-0">{last(x).w}</span>
                     {x.u ? (
                       <span className="w-2 h-2 bg-coral shrink-0" aria-label="Unread"></span>

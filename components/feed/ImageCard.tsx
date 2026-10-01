@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { IconBtn } from '@/components/ui/IconBtn';
 import { Menu, shareItems, shareNative } from '@/components/ui/Menu';
 import { toast } from '@/components/ui/Toaster';
@@ -66,10 +67,9 @@ export function ImageCard({ pin, extra = [] }: ImageCardProps) {
         className="relative border border-line overflow-hidden bg-sub"
         style={{ aspectRatio: '1/' + pin.ratio }}
       >
-        <button
-          type="button"
+        <Link
+          href={'/post/' + pin.id}
           aria-label={'Open ' + pin.title}
-          onClick={() => c.go('post', pin.id)}
           className="block w-full h-full"
         >
           <img
@@ -82,7 +82,7 @@ export function ImageCard({ pin, extra = [] }: ImageCardProps) {
               (ld ? 'opacity-100' : 'opacity-0')
             }
           />
-        </button>
+        </Link>
         <div className="absolute top-3 right-3 max-lg:hidden lg:opacity-0 lg:group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
           <button
             type="button"
@@ -97,13 +97,12 @@ export function ImageCard({ pin, extra = [] }: ImageCardProps) {
       <figcaption className="flex items-start max-md:items-center justify-between pt-3 max-md:pt-1.5 gap-2">
         <div className="min-w-0 flex-1">
           <p className="font-medium truncate max-md:hidden">{pin.title}</p>
-          <button
-            type="button"
-            onClick={() => c.go('profile', pin.by.id)}
+          <Link
+            href={'/profile/' + pin.by.id}
             className="block text-xs text-mut hover:text-fg truncate max-w-full text-left"
           >
             {pin.by.name}
-          </button>
+          </Link>
         </div>
         <div
           className={

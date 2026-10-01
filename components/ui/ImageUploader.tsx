@@ -6,9 +6,18 @@ import { Icon } from '@/components/ui/Icon';
 interface ImageUploaderProps {
   value: string;
   onChange: (v: string) => void;
+  label?: string;
+  hint?: string;
+  altText?: string;
 }
 
-export function ImageUploader({ value, onChange }: ImageUploaderProps) {
+export function ImageUploader({
+  value,
+  onChange,
+  label = 'Add image',
+  hint = 'Drag and drop, or browse',
+  altText = 'Image preview',
+}: ImageUploaderProps) {
   const [drag, setDrag] = useState(false);
   const [pg, setPg] = useState<number | null>(null);
   const [err, setErr] = useState('');
@@ -37,7 +46,7 @@ export function ImageUploader({ value, onChange }: ImageUploaderProps) {
       <div className="flex items-center gap-4">
         <img
           src={value}
-          alt="Your profile preview"
+          alt={altText}
           className="w-28 h-28 object-cover border border-line"
         />
         <div className="flex flex-col gap-2">
@@ -94,8 +103,8 @@ export function ImageUploader({ value, onChange }: ImageUploaderProps) {
         ) : (
           <div className="grid place-items-center gap-3">
             <Icon n="plus" c="w-8 h-8" />
-            <span className="lbl text-fg">Add profile image</span>
-            <span className="text-sm text-mut">Drag and drop, or browse</span>
+            <span className="lbl text-fg">{label}</span>
+            <span className="text-sm text-mut">{hint}</span>
           </div>
         )}
       </label>

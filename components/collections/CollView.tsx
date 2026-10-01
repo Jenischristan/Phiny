@@ -17,7 +17,7 @@ interface CollViewProps {
 export function CollView({ coll, onBack, mine }: CollViewProps) {
   const c = useC();
   const list = coll.pins
-    .map((id) => c.posts.find((x) => x.id === id))
+    .map((id) => c.posts.find((x) => String(x.id) === String(id)))
     .filter((x): x is Post => Boolean(x));
 
   return (

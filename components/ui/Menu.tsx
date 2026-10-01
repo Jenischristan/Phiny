@@ -177,13 +177,14 @@ export function Menu({
 
   useEffect(() => {
     if (!mt || sh) return;
-    let f: number;
-    const t = () => {
-      place();
-      f = requestAnimationFrame(t);
+    place();
+    const handleReposition = () => place();
+    window.addEventListener('resize', handleReposition, { passive: true });
+    window.addEventListener('scroll', handleReposition, { passive: true, capture: true });
+    return () => {
+      window.removeEventListener('resize', handleReposition);
+      window.removeEventListener('scroll', handleReposition, { capture: true });
     };
-    t();
-    return () => cancelAnimationFrame(f);
   }, [mt, sh]);
 
   useEffect(() => {

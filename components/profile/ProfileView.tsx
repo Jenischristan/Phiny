@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { CollGrid } from '@/components/collections/CollGrid';
 import { CollView } from '@/components/collections/CollView';
 import { Grid } from '@/components/feed/Grid';
@@ -78,17 +79,17 @@ export function ProfileView({ id }: ProfileViewProps) {
     ? Object.values(c.fol).filter(Boolean).length
     : p.fing || 0;
 
-  const stat = (n: number, l: string, fn?: () => void) => {
+  const stat = (n: number, l: string, href?: string) => {
     const i = (
       <>
         <b className="block text-lg">{fmt(n)}</b>
         <span className="lbl">{l}</span>
       </>
     );
-    return fn ? (
-      <button type="button" onClick={fn} className="text-left">
+    return href ? (
+      <Link href={href} className="text-left hover:opacity-75 transition-opacity">
         {i}
-      </button>
+      </Link>
     ) : (
       <div>{i}</div>
     );
@@ -123,10 +124,16 @@ export function ProfileView({ id }: ProfileViewProps) {
           )}
           <div className="flex gap-8 mt-4">
             {stat(posts.length, 'Posts')}
-            {stat(p.fers + (on ? 1 : 0), 'Followers', () =>
-              c.go('followers', p.id)
+            {stat(
+              p.fers + (on ? 1 : 0),
+              'Followers',
+              isMe ? '/profile/me/followers' : `/profile/${p.id}/followers`
             )}
-            {stat(fing, 'Following', () => c.go('following', p.id))}
+            {stat(
+              fing,
+              'Following',
+              isMe ? '/profile/me/following' : `/profile/${p.id}/following`
+            )}
           </div>
         </div>
         <div className="flex items-center gap-2">

@@ -557,7 +557,7 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
     removeFrom: (cid, pid) => {
       setColls((cs) =>
         cs.map((k) =>
-          k.id === cid ? { ...k, pins: k.pins.filter((x) => x !== pid) } : k
+          k.id === cid ? { ...k, pins: k.pins.filter((x) => String(x) !== String(pid)) } : k
         )
       );
       toast('Removed from collection');
@@ -568,8 +568,8 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
           k.id === cid
             ? {
                 ...k,
-                pins: k.pins.includes(pid)
-                  ? k.pins.filter((x) => x !== pid)
+                pins: k.pins.some((x) => String(x) === String(pid))
+                  ? k.pins.filter((x) => String(x) !== String(pid))
                   : [...k.pins, pid],
               }
             : k

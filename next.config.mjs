@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   allowedDevOrigins: [
     'ais-dev-pbn6ab6eei5nqbqf7epbq6-299465333390.asia-southeast1.run.app',
