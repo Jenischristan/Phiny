@@ -1,0 +1,602 @@
+openapi: 3.1.0
+info:
+  title: Phiny API
+  version: 0.1.0
+  description: Backend API contract for Phiny visual discovery, curation, and publishing platform.
+servers:
+  - url: /api
+    description: Current internal API endpoint root
+paths:
+  /auth/login:
+    post:
+      summary: Sign in user
+      description: Authenticates user by username handle or email.
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Missing or empty credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /posts:
+    get:
+      summary: List posts
+      description: Retrieve visual publications with optional filtering by tag, search keyword, or creator.
+      operationId: listPosts
+      parameters:
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Category tag filter (e.g. Architecture)
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Search term matching title, creator name, or tags
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter posts authored by this user ID
+      responses:
+        '200':
+          description: List of posts retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  count:
+                    type: integer
+                    example: 48
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Post'
+    post:
+      summary: Create post
+      description: Publish a new visual publication.
+      operationId: createPost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInput'
+      responses:
+        '201':
+          description: Post published successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Post'
+        '400':
+          description: Validation failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /posts/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique post ID
+    get:
+      summary: Get post details
+      operationId: getPostById
+      responses:
+        '200':
+          description: Post found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    patch:
+      summary: Update post
+      operationId: updatePost
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                desc:
+                  type: string
+                vis:
+                  type: string
+                  enum: [public, private]
+                comments:
+                  type: boolean
+                hideLikes:
+                  type: boolean
+      responses:
+        '200':
+          description: Post updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      summary: Delete post
+      operationId: deletePost
+      responses:
+        '200':
+          description: Post deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '404':
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /collections:
+    get:
+      summary: List collections
+      description: Retrieve user or public collections.
+      operationId: listCollections
+      responses:
+        '200':
+          description: Collections list retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  count:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Collection'
+    post:
+      summary: Create collection
+      description: Create a new curated board.
+      operationId: createCollection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionInput'
+      responses:
+        '201':
+          description: Collection created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Collection'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+  /collections/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get collection by ID
+      operationId: getCollectionById
+      responses:
+        '200':
+          description: Collection details retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Collection'
+        '404':
+          description: Collection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    patch:
+      summary: Update collection
+      operationId: updateCollection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                priv:
+                  type: boolean
+                pins:
+                  type: array
+                  items:
+                    oneOf:
+                      - type: string
+                      - type: integer
+      responses:
+        '200':
+          description: Collection updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Collection'
+        '404':
+          description: Collection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    delete:
+      summary: Delete collection
+      operationId: deleteCollection
+      responses:
+        '200':
+          description: Collection deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '404':
+          description: Collection not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+
+components:
+  schemas:
+    Person:
+      type: object
+      required:
+        - id
+        - name
+        - handle
+        - fers
+        - state
+      properties:
+        id:
+          oneOf:
+            - type: integer
+            - type: string
+          example: 0
+        name:
+          type: string
+          example: Mara Okafor
+        handle:
+          type: string
+          example: maraokafor
+        role:
+          type: string
+          example: Architectural photographer
+        bio:
+          type: string
+          example: Architectural photographer. Lagos & Zurich.
+        fers:
+          type: integer
+          example: 4200
+        fing:
+          type: integer
+          example: 312
+        loc:
+          type: string
+          example: Lagos & Zurich
+        web:
+          type: string
+          example: maraokafor.com
+        state:
+          type: string
+          enum: [active, private, deactivated]
+          example: active
+        vis:
+          type: string
+          enum: [public, private]
+          example: public
+        photo:
+          type: string
+          example: https://cdn.phiny.art/avatars/mara.webp
+
+    Post:
+      type: object
+      required:
+        - id
+        - title
+        - by
+        - tag
+        - seed
+        - ratio
+        - date
+        - likes
+        - vis
+        - comments
+      properties:
+        id:
+          oneOf:
+            - type: integer
+            - type: string
+          example: 0
+        title:
+          type: string
+          example: Concrete Light
+        by:
+          $ref: '#/components/schemas/Person'
+        tag:
+          type: string
+          example: Architecture
+        tags:
+          type: array
+          items:
+            type: string
+          example: [Architecture, Brutalism, Concrete]
+        seed:
+          type: integer
+          example: 3
+        ratio:
+          type: number
+          format: float
+          example: 1.25
+        date:
+          type: string
+          example: 2d ago
+        likes:
+          type: integer
+          example: 293
+        vis:
+          type: string
+          enum: [public, private]
+          example: public
+        comments:
+          type: boolean
+          example: true
+        hideLikes:
+          type: boolean
+          example: false
+        src:
+          type: string
+          example: https://cdn.phiny.art/posts/0.webp
+        alt:
+          type: string
+          example: Concrete Light by Mara Okafor
+        desc:
+          type: string
+          example: Brutalist morning shadows in Lagos.
+        loc:
+          type: string
+          example: Lagos, Nigeria
+
+    PostInput:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 3
+          maxLength: 80
+          example: Brutalist Facade No. 1
+        tag:
+          type: string
+          example: Architecture
+        tags:
+          type: array
+          items:
+            type: string
+          example: [Architecture, Concrete]
+        ratio:
+          type: number
+          format: float
+          example: 1.25
+        src:
+          type: string
+          example: https://cdn.phiny.art/posts/upload_1.webp
+        alt:
+          type: string
+          example: Close up of angled concrete beam
+        desc:
+          type: string
+          example: Captured at sunrise
+        vis:
+          type: string
+          enum: [public, private]
+          default: public
+        comments:
+          type: boolean
+          default: true
+        hideLikes:
+          type: boolean
+          default: false
+        loc:
+          type: string
+          example: Milan, Italy
+        coll:
+          type: string
+          example: c0
+
+    Collection:
+      type: object
+      required:
+        - id
+        - name
+        - priv
+        - pins
+      properties:
+        id:
+          type: string
+          example: c0
+        name:
+          type: string
+          example: Brutalist Moods
+        priv:
+          type: boolean
+          example: false
+        pins:
+          type: array
+          items:
+            oneOf:
+              - type: integer
+              - type: string
+          example: [0, 4, 8, 12]
+
+    CollectionInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+          example: Brutalist Moods
+        priv:
+          type: boolean
+          default: false
+        pins:
+          type: array
+          items:
+            oneOf:
+              - type: integer
+              - type: string
+          example: []
+
+    LoginRequest:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          example: maraokafor
+
+    LoginResponse:
+      type: object
+      required:
+        - success
+        - user
+      properties:
+        success:
+          type: boolean
+          example: true
+        user:
+          $ref: '#/components/schemas/Person'
+
+    ApiError:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Post not found
+        code:
+          type: string
+          example: POST_NOT_FOUND
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+
+    SuccessMessage:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: Operation completed successfully
