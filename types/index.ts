@@ -66,6 +66,7 @@ export interface ChatMessage {
 export interface Conversation {
   id: number;
   u: number;
+  unread?: number | boolean;
   mute: number | boolean;
   m: ChatMessage[];
 }

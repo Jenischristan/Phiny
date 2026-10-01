@@ -73,26 +73,27 @@ export function MsgsSheet() {
                   <button
                     type="button"
                     onClick={() => {
-                      upd(x.id, (z) => ({ ...z, u: 0 }));
+                      upd(x.id, (z) => ({ ...z, unread: 0 }));
                       setCur(x.id);
                     }}
                     className="w-full flex items-center gap-3 px-3.5 py-3 text-left hover:bg-sub"
                   >
                     {(() => {
                       const person = PEOPLE.find((p) => p.id === x.u) || PEOPLE[x.u] || PEOPLE[0];
+                      const isUnread = Boolean(x.unread);
                       return (
                         <>
                           <ProfileAvatar p={person} size={36} />
                           <span className="flex-1 min-w-0">
                             <span
-                              className={'block text-sm truncate ' + (x.u ? 'font-bold' : 'font-medium')}
+                              className={'block text-sm truncate ' + (isUnread ? 'font-bold' : 'font-medium')}
                             >
                               {person.name}
                               {x.mute ? ' · Muted' : ''}
                             </span>
                             <span
                               className={
-                                'block text-xs truncate mt-0.5 ' + (x.u ? 'text-fg' : 'text-mut')
+                                'block text-xs truncate mt-0.5 ' + (isUnread ? 'text-fg' : 'text-mut')
                               }
                             >
                               {last(x).t}
@@ -102,7 +103,7 @@ export function MsgsSheet() {
                       );
                     })()}
                     <span className="lbl shrink-0">{last(x).w}</span>
-                    {x.u ? (
+                    {x.unread ? (
                       <span className="w-2 h-2 bg-coral shrink-0" aria-label="Unread"></span>
                     ) : null}
                   </button>

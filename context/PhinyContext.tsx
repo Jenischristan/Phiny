@@ -209,6 +209,18 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || '/';
   const parsed = parsePathname(pathname);
 
+  const [internalRoute, setInternalRoute] = useState<{
+    route: RouteName;
+    rid: number | string | null;
+  }>(() => ({
+    route: parsed.route,
+    rid: parsed.rid,
+  }));
+
+  useEffect(() => {
+    setInternalRoute({ route: parsed.route, rid: parsed.rid });
+  }, [parsed.route, parsed.rid]);
+
   const [prev, setPrev] = useState<{ route: RouteName; rid: number | string | null }[]>([]);
   const [user, setUser] = useState<Partial<Person> | null>(null);
   const [accounts, setAccounts] = useState<Partial<Person>[]>(DEFAULT_ACCOUNTS);
@@ -301,8 +313,6 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
     if (
       !user &&
       (route === 'create' ||
-        route === 'library' ||
-        route === 'settings' ||
         (route === 'profile' && (rid == null || rid === 'me')))
     ) {
       setWhy(route === 'create' ? 'Log in to create posts.' : 'Log in to continue.');
@@ -310,8 +320,9 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setSheet(null);
-    setPrev((p) => [...p, { route: parsed.route, rid: parsed.rid }]);
+    setPrev((p) => [...p, { route: internalRoute.route, rid: internalRoute.rid }]);
     const targetRid = route === 'profile' && rid == null ? 'me' : rid;
+    setInternalRoute({ route, rid: targetRid });
     router.push(routeToPath(route, targetRid));
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
   };
@@ -319,6 +330,7 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
   const back = () => {
     const p = prev[prev.length - 1] || { route: 'home' as RouteName, rid: null };
     setPrev((x) => x.slice(0, -1));
+    setInternalRoute({ route: p.route, rid: p.rid });
     router.push(routeToPath(p.route, p.rid));
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
   };
@@ -461,8 +473,8 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
   const ctx: PhinyContextValue = {
     screen: parsed.screen,
     setScreen,
-    route: parsed.route,
-    rid: parsed.rid,
+    route: internalRoute.route,
+    rid: internalRoute.rid,
     go,
     back,
     me,
@@ -521,11 +533,10 @@ export function PhinyProvider({ children }: { children: React.ReactNode }) {
     openLogin: () => setLogin(true),
     goSignup: () => router.push('/signup'),
     openAdd: (id) => gate(() => setAddTo(id), 'Log in to add to a collection.'),
-    toggleSave: (id) =>
-      gate(() => {
-        flip(setSaved, id);
-        toast(saved[id] ? 'Removed from saved' : 'Saved to your library');
-      }, 'Log in to save posts.'),
+    toggleSave: (id) => {
+      flip(setSaved, id);
+      toast(saved[id] ? 'Removed from saved' : 'Saved to your library');
+    },
     toggleLike: (id) => gate(() => flip(setLiked, id), 'Log in to like posts.'),
     toggleFol: (id) => gate(() => flip(setFol, id), 'Log in to follow creators.'),
     gate,

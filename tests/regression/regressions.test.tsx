@@ -111,7 +111,7 @@ describe('Audit Regression Test Suite', () => {
       </PhinyProvider>
     );
 
-    expect(screen.getByText('Type Specimens')).toBeInTheDocument();
+    expect(screen.getByText('Brutalist Moods')).toBeInTheDocument();
     unmount();
 
     // Invalid collection

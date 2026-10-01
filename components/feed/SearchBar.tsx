@@ -59,7 +59,7 @@ interface SearchBarProps {
   setQ: (v: string) => void;
 }
 
-const FULL_PLACEHOLDER = 'Search images, creators, ideas';
+const FULL_PLACEHOLDER = 'Search pins, creators, themes';
 
 export function SearchBar({ q, setQ }: SearchBarProps) {
   const c = useC();

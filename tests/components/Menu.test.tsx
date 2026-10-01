@@ -61,6 +61,7 @@ describe('Component: Menu', () => {
   });
 
   it('does NOT run a continuous requestAnimationFrame loop while open', () => {
+    vi.useFakeTimers();
     const rafSpy = vi.spyOn(window, 'requestAnimationFrame');
     render(
       <PhinyProvider>
@@ -83,5 +84,6 @@ describe('Component: Menu', () => {
     // Must NOT have continuously accumulated animation frames
     expect(countAfter - countBefore).toBeLessThan(3);
     rafSpy.mockRestore();
+    vi.useRealTimers();
   });
 });

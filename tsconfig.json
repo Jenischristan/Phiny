@@ -40,14 +40,15 @@
     "lib/**/*.ts",
     "hooks/**/*.ts",
     "types/**/*.ts",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "src",
-    "vite.config.ts"
+    "vite.config.ts",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    "tests"
   ]
 }

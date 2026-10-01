@@ -188,9 +188,10 @@ export const NOTES2: NotificationItem[] = RAW_NOTES2.map(([p, t, w, pin, u], id)
   u,
 }));
 
-export const CONV0: Conversation[] = MSGS.map(([i, t, w, u]) => ({
-  id: i,
-  u,
+export const CONV0: Conversation[] = MSGS.map(([personId, t, w, unread], idx) => ({
+  id: idx,
+  u: personId,
+  unread,
   mute: 0,
   m: [
     { id: 1, me: 1, t: 'Hi! Thanks for the follow.', w: 'Mon' },
